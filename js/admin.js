@@ -76,25 +76,61 @@ function renderVehicleSelector() {
   if (!container) return;
 
   const cars = FleetStore.getCars();
-  container.innerHTML = '';
+  container.innerHTML = `
+    <div class="w-full bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xl">
+      <div class="w-full md:w-1/2">
+        <label for="admin-car-select-dropdown" class="block text-[11px] font-mono uppercase text-zinc-400 font-bold mb-1.5 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          Choisir parmi les ${cars.length} bolides de la flotte :
+        </label>
+        <select id="admin-car-select-dropdown" class="w-full px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white font-bold text-sm focus:border-red-500 focus:outline-none transition cursor-pointer">
+          ${cars.map(c => `
+            <option value="${c.id}" ${c.id === currentAdminCarId ? 'selected' : ''}>
+              ${c.name} • ${c.power || ''} (${c.prices?.dailyWeek ? c.prices.dailyWeek + '€/j' : ''})
+            </option>
+          `).join('')}
+        </select>
+      </div>
 
-  cars.forEach(car => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    const isActive = car.id === currentAdminCarId;
-    btn.className = `flex-1 py-3 px-4 rounded-xl text-xs md:text-sm font-bold uppercase tracking-wider transition ${
-      isActive
-        ? 'bg-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]'
-        : 'bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800'
-    }`;
-    btn.textContent = car.name;
-    btn.addEventListener('click', () => {
-      currentAdminCarId = car.id;
+      <div class="w-full md:w-1/2">
+        <span class="block text-[11px] font-mono uppercase text-zinc-400 font-bold mb-1.5">Accès rapide par modèle phare :</span>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" id="admin-quick-pills"></div>
+      </div>
+    </div>
+  `;
+
+  const dropdown = document.getElementById('admin-car-select-dropdown');
+  if (dropdown) {
+    dropdown.addEventListener('change', (e) => {
+      currentAdminCarId = e.target.value;
+      loadCarData(currentAdminCarId);
       renderVehicleSelector();
-      loadCarData(car.id);
     });
-    container.appendChild(btn);
-  });
+  }
+
+  const pillsContainer = document.getElementById('admin-quick-pills');
+  if (pillsContainer) {
+    const quickIds = ['rs6', 'm4-competition', 'c63s', 'ferrari-sf90', 'lamborghini-urus', 'mercedes-g63', 'porsche-911', 'rolls-royce-ghost'];
+    quickIds.forEach(id => {
+      const c = cars.find(item => item.id === id);
+      if (!c) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      const isActive = c.id === currentAdminCarId;
+      btn.className = `whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition flex-shrink-0 ${
+        isActive 
+          ? 'bg-red-600 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]' 
+          : 'bg-zinc-950 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800'
+      }`;
+      btn.textContent = c.name.split(' ')[0] + ' ' + (c.name.split(' ')[1] || '');
+      btn.addEventListener('click', () => {
+        currentAdminCarId = c.id;
+        loadCarData(c.id);
+        renderVehicleSelector();
+      });
+      pillsContainer.appendChild(btn);
+    });
+  }
 }
 
 /* ==========================================================================

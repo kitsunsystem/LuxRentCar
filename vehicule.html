@@ -446,7 +446,7 @@
 
       // Grille des autres voitures
       const otherGrid = document.getElementById('other-cars-grid');
-      const allCars = FleetStore.getCars().filter(c => c.id !== car.id);
+      const allCars = FleetStore.getCars().filter(c => c.id !== car.id).slice(0, 4);
       allCars.forEach(other => {
         const card = document.createElement('a');
         card.href = `vehicule.html?id=${other.id}`;
