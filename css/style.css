@@ -1,0 +1,259 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   LuxRentCar - Styles de Prestige (French Riviera 06)
+   Esthétique : Carbon Black, Obsidian Glass, Red Sport Neon & High Luxury
+   ========================================================================== */
+
+:root {
+  --lux-bg: #070709;
+  --lux-surface: #0e0e13;
+  --lux-surface-glass: rgba(18, 18, 24, 0.75);
+  --lux-border: rgba(255, 255, 255, 0.08);
+  --lux-border-highlight: rgba(239, 68, 68, 0.35);
+  --lux-red: #ef4444;
+  --lux-red-glow: rgba(239, 68, 68, 0.45);
+  --lux-red-dark: #b91c1c;
+  --lux-text: #f4f4f5;
+  --lux-text-muted: #a1a1aa;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--lux-bg);
+  color: var(--lux-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--lux-bg);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #09090c;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ef4444;
+}
+
+/* Texture Carbone Subtile */
+.bg-carbon {
+  background-color: #08080a;
+  background-image: 
+    radial-gradient(rgba(239, 68, 68, 0.04) 1px, transparent 0),
+    linear-gradient(to bottom, rgba(8, 8, 10, 0.85), #08080a);
+  background-size: 24px 24px, 100% 100%;
+}
+
+/* Glassmorphism Luxury */
+.glass-panel {
+  background: var(--lux-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--lux-border);
+}
+
+.glass-panel-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  border-color: var(--lux-border-highlight);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(239, 68, 68, 0.2);
+  transform: translateY(-3px);
+}
+
+/* Glow Elements */
+.glow-red {
+  box-shadow: 0 0 25px var(--lux-red-glow);
+}
+.glow-text-red {
+  text-shadow: 0 0 16px rgba(239, 68, 68, 0.6);
+}
+
+/* Laser Tracing & Intro Splash Screen */
+#intro-splash {
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+}
+#intro-splash.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.laser-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: laserDraw 2.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes laserDraw {
+  0% {
+    stroke-dashoffset: 1000;
+    opacity: 0.2;
+    filter: drop-shadow(0 0 2px #ef4444);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px #ef4444) drop-shadow(0 0 25px #dc2626);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    filter: drop-shadow(0 0 8px #ef4444);
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.35);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.7);
+    border-color: rgba(239, 68, 68, 0.9);
+  }
+}
+
+/* Video & Canvas Hero Background */
+.hero-media-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  filter: brightness(0.7) contrast(1.15) saturate(1.2);
+}
+
+.hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(7, 7, 9, 0.3) 0%, rgba(7, 7, 9, 0.85) 75%, #070709 100%),
+              linear-gradient(to bottom, rgba(7, 7, 9, 0.5) 0%, transparent 40%, #070709 95%);
+  pointer-events: none;
+}
+
+/* Badge Prestige */
+.badge-prestige {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* Cartes Véhicules & Galeries */
+.car-gallery-image {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s;
+}
+.car-card:hover .car-gallery-image {
+  transform: scale(1.03);
+}
+
+/* Soft Dark Calendar Specifics */
+.lux-calendar-card {
+  background: #0d0d12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Sound Wave Animation for Sound Toggle */
+.sound-wave-bar {
+  width: 3px;
+  height: 12px;
+  background-color: #ef4444;
+  border-radius: 2px;
+  animation: soundBar 1.2s infinite ease-in-out;
+}
+.sound-wave-bar:nth-child(2) { animation-delay: 0.2s; }
+.sound-wave-bar:nth-child(3) { animation-delay: 0.4s; }
+.sound-wave-bar:nth-child(4) { animation-delay: 0.1s; }
+
+@keyframes soundBar {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+
+.sound-wave-bar.muted {
+  animation: none !important;
+  height: 3px !important;
+  background-color: #71717a !important;
+}
+
+/* Animations de transition */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Mobile Action Bar */
+@media (max-width: 768px) {
+  .mobile-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    padding: 0.75rem 1rem;
+    background: rgba(14, 14, 19, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}

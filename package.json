@@ -1,0 +1,24 @@
+{
+  "name": "luxrentcar",
+  "version": "1.0.0",
+  "description": "Plateforme web de location de véhicules de luxe dans tout le 06 (Nice, Cannes, Monaco, St Tropez)",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 .",
+    "build": "node -e \"console.log('Site prêt pour la production!')\""
+  },
+  "keywords": [
+    "car-rental",
+    "luxury",
+    "audi-rs6",
+    "audi-rs3",
+    "golf-8r",
+    "monaco",
+    "cannes",
+    "nice",
+    "french-riviera"
+  ],
+  "author": "Kitsun System",
+  "license": "MIT"
+}

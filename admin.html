@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard • LuxRentCar 06</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Tailwind CSS CDN & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lux: {
+              bg: '#070709',
+              surface: '#0e0e13',
+              card: '#121218',
+              red: '#ef4444',
+              redDark: '#b91c1c'
+            }
+          },
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Styles sur-mesure -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-carbon text-zinc-100 min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
+
+  <!-- ==========================================================================
+       ÉCRAN D'AUTHENTIFICATION PIN ADMIN
+       ========================================================================== -->
+  <div id="admin-auth-section" class="fixed inset-0 z-50 flex items-center justify-center bg-[#070709] px-4">
+    <div class="glass-panel max-w-sm w-full p-8 rounded-3xl border border-zinc-800 text-center shadow-2xl relative">
+      <div class="w-16 h-16 rounded-2xl mx-auto mb-4 overflow-hidden border border-red-500/60 shadow-[0_0_20px_rgba(239,68,68,0.4)]">
+        <img src="assets/logo/Logo.jpg" alt="Logo" class="w-full h-full object-cover">
+      </div>
+
+      <h2 class="text-xl font-black uppercase text-white tracking-tight mb-1">Espace Administrateur</h2>
+      <p class="text-xs text-zinc-400 mb-6 font-medium">LuxRentCar 06 • Accès Sécurisé</p>
+
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label class="block text-left text-[10px] font-mono text-zinc-400 uppercase tracking-wider mb-1">Code PIN d'accès</label>
+          <input type="password" id="admin-pin-input" placeholder="Entrez votre PIN (ex: lux06)" required autofocus class="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 text-center text-white font-mono text-base tracking-widest focus:border-red-500 focus:outline-none">
+        </div>
+
+        <p id="admin-auth-error" class="hidden text-xs text-red-500 font-semibold">
+          Code PIN incorrect. Veuillez réessayer.
+        </p>
+
+        <button type="submit" class="w-full py-3 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-white bg-red-600 hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)] transition">
+          Déverrouiller le Dashboard
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-zinc-900">
+        <a href="index.html" class="text-xs text-zinc-500 hover:text-zinc-300 transition">
+          ← Retour au site public
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       TABLEAU DE BORD D'ADMINISTRATION PRINCIPAL
+       ========================================================================== -->
+  <div id="admin-dashboard-section" class="hidden flex-col flex-grow">
+    
+    <!-- Header Admin -->
+    <header class="glass-panel border-b border-zinc-800 bg-zinc-950/90 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg overflow-hidden border border-red-500/60">
+            <img src="assets/logo/Logo.jpg" alt="Logo" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <span class="text-sm font-black text-white uppercase">LUX<span class="text-red-500">RENT</span>CAR</span>
+            <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-mono bg-red-950/80 text-red-400 border border-red-800/60 font-bold uppercase">PANEL ADMIN</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-semibold transition flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            Voir le site
+          </a>
+          <button id="admin-logout-btn" class="px-3.5 py-1.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-900/50 text-xs font-semibold transition">
+            Déconnexion
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Corps de l'Administration -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8 flex-grow">
+      
+      <!-- Sélecteur de Véhicule -->
+      <div>
+        <label class="block text-xs font-mono uppercase text-zinc-400 font-bold tracking-wider mb-2">Sélectionnez le bolide à administrer :</label>
+        <div id="admin-car-selector" class="flex flex-col sm:flex-row gap-2"></div>
+      </div>
+
+      <!-- Grille Principale 2 Colonnes -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Colonne Gauche : Tarifs & Spécifications (7 col) -->
+        <div class="lg:col-span-7 space-y-8">
+          
+          <!-- Formulaire Tarifs & Fiche -->
+          <div class="glass-panel p-6 rounded-3xl border border-zinc-800">
+            <div class="flex items-center justify-between mb-6 pb-3 border-b border-zinc-800">
+              <h3 class="text-base font-black uppercase text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                Tarifs & Caractéristiques Techniques
+              </h3>
+              <span class="text-[11px] text-zinc-400 font-mono">Enregistrement direct</span>
+            </div>
+
+            <form id="admin-car-edit-form" class="space-y-4 text-xs">
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-zinc-400 font-semibold mb-1">Nom commercial</label>
+                  <input type="text" id="edit-car-name" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-bold focus:border-red-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-zinc-400 font-semibold mb-1">Badge d'accroche</label>
+                  <input type="text" id="edit-car-badge" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-red-400 font-bold focus:border-red-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-zinc-400 font-semibold mb-1">Sous-titre / Motorisation</label>
+                <input type="text" id="edit-car-subtitle" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white focus:border-red-500 focus:outline-none">
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-zinc-400 font-semibold mb-1">Puissance</label>
+                  <input type="text" id="edit-car-power" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono focus:border-red-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-zinc-400 font-semibold mb-1">0 à 100 km/h</label>
+                  <input type="text" id="edit-car-acceleration" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono focus:border-red-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-zinc-400 font-semibold mb-1">Vitesse Max</label>
+                  <input type="text" id="edit-car-topSpeed" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono focus:border-red-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-zinc-400 font-semibold mb-1">Sonorité / Ligne d'échappement</label>
+                <input type="text" id="edit-car-sound" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white focus:border-red-500 focus:outline-none">
+              </div>
+
+              <!-- Bloc Grille Tarifaire -->
+              <div class="pt-4 border-t border-zinc-800">
+                <h4 class="text-xs font-bold uppercase text-red-400 tracking-wider mb-3">Grille Tarifaire (€ TTC)</h4>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-zinc-500 text-[11px] mb-1">Semaine / jour</label>
+                    <input type="number" id="edit-price-daily" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono font-bold focus:border-red-500 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-emerald-400 text-[11px] mb-1">Pack Lun-Ven (5j)</label>
+                    <input type="number" id="edit-price-packWeek" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-emerald-400 font-mono font-bold focus:border-red-500 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-zinc-500 text-[11px] mb-1">Week-end (Ven-Dim)</label>
+                    <input type="number" id="edit-price-weekend" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono font-bold focus:border-red-500 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-amber-400 text-[11px] mb-1">W-E Complet (Ven-Lun)</label>
+                    <input type="number" id="edit-price-weekendFull" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-amber-400 font-mono font-bold focus:border-red-500 focus:outline-none">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+                  <div>
+                    <label class="block text-zinc-500 text-[11px] mb-1">Caution standard (€)</label>
+                    <input type="number" id="edit-price-deposit" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono focus:border-red-500 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-zinc-500 text-[11px] mb-1">Caution (-25 ans) (€)</label>
+                    <input type="number" id="edit-price-depositYoung" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono focus:border-red-500 focus:outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-zinc-500 text-[11px] mb-1">Kilométrage / jour (km)</label>
+                    <input type="number" id="edit-price-kmPerDay" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono focus:border-red-500 focus:outline-none">
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4">
+                <button type="submit" class="w-full py-3 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-white bg-red-600 hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] transition">
+                  Enregistrer les modifications
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Gestionnaire de Galerie Photos -->
+          <div class="glass-panel p-6 rounded-3xl border border-zinc-800">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+              <h3 class="text-base font-black uppercase text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                Galerie Photos du Véhicule
+              </h3>
+              <span class="text-[11px] text-zinc-400 font-mono">Ajout / Retrait</span>
+            </div>
+
+            <!-- Ajout d'image -->
+            <div class="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800 space-y-3 mb-5 text-xs">
+              <span class="font-bold text-zinc-300 block uppercase tracking-wider text-[11px]">Ajouter une photo :</span>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Par upload de fichier local -->
+                <div>
+                  <label class="block text-zinc-500 mb-1">Depuis votre ordinateur / mobile :</label>
+                  <input type="file" id="admin-image-upload" accept="image/*" class="w-full text-xs text-zinc-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-white hover:file:bg-zinc-700 cursor-pointer">
+                </div>
+                
+                <!-- Par lien URL -->
+                <div>
+                  <label class="block text-zinc-500 mb-1">Ou par URL d'image :</label>
+                  <div class="flex gap-2">
+                    <input type="url" id="admin-image-url" placeholder="https://..." class="flex-1 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-red-500">
+                    <button type="button" id="admin-add-url-btn" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-bold">Ajouter</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Liste des images actuelles -->
+            <div id="admin-gallery-list" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+          </div>
+
+        </div>
+
+        <!-- Colonne Droite : Calendrier & Réservations (5 col) -->
+        <div class="lg:col-span-5 space-y-8">
+          
+          <!-- Calendrier Interactif Admin -->
+          <div class="glass-panel p-6 rounded-3xl border border-zinc-800">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+              <h3 class="text-base font-black uppercase text-white flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                Calendrier des Disponibilités
+              </h3>
+            </div>
+
+            <p class="text-xs text-zinc-400 mb-4">
+              Cliquez directement sur un jour du calendrier pour <span class="text-emerald-400 font-semibold">libérer</span> ou <span class="text-red-500 font-semibold">bloquer</span> une réservation.
+            </p>
+
+            <!-- Calendrier Injecté -->
+            <div id="admin-calendar-container" class="w-full mb-5"></div>
+
+            <!-- Blocage rapide par plage -->
+            <div class="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800 text-xs space-y-3">
+              <span class="font-bold text-zinc-300 block uppercase tracking-wider text-[11px]">Bloquer une plage de dates :</span>
+              
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-zinc-500 mb-1">Date Début</label>
+                  <input type="date" id="admin-range-start" class="w-full px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white">
+                </div>
+                <div>
+                  <label class="block text-zinc-500 mb-1">Date Fin</label>
+                  <input type="date" id="admin-range-end" class="w-full px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-zinc-500 mb-1">Nom client ou motif</label>
+                <input type="text" id="admin-range-note" placeholder="Ex: Réservé Client Cannes" class="w-full px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-white">
+              </div>
+
+              <div class="flex gap-2 pt-1">
+                <button type="button" id="admin-block-range-btn" class="flex-1 py-2 px-3 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold uppercase tracking-wider text-[11px] transition">
+                  Bloquer la période
+                </button>
+                <button type="button" id="admin-clear-month-btn" class="py-2 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] transition" title="Effacer toutes les réservations du véhicule">
+                  Tout libérer
+                </button>
+              </div>
+            </div>
+
+            <!-- Liste des réservations enregistrées -->
+            <div class="mt-5">
+              <span class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Dates actuellement réservées :</span>
+              <ul id="admin-booked-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></ul>
+            </div>
+          </div>
+
+          <!-- Sauvegarde, Export & Réinitialisation -->
+          <div class="glass-panel p-6 rounded-3xl border border-zinc-800 text-xs space-y-4">
+            <h4 class="font-bold text-white uppercase tracking-wider">Sauvegarde & Restauration</h4>
+            <p class="text-zinc-400 leading-relaxed">
+              Toutes les modifications sont enregistrées localement dans votre navigateur. Vous pouvez exporter un fichier de sauvegarde JSON pour le conserver ou transférer la configuration.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button type="button" id="admin-export-btn" class="py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold transition flex items-center justify-center gap-1.5">
+                <span>💾 Exporter JSON</span>
+              </button>
+
+              <label class="py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>📂 Importer JSON</span>
+                <input type="file" id="admin-import-file" accept=".json" class="hidden">
+              </label>
+            </div>
+
+            <div class="pt-2 border-t border-zinc-800">
+              <button type="button" id="admin-reset-btn" class="w-full py-2 px-3 rounded-xl bg-red-950/30 hover:bg-red-900/50 border border-red-900/40 text-red-400 font-bold transition">
+                ⚠️ Réinitialiser aux valeurs d'origine
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Scripts Javascript -->
+  <script src="js/data.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
