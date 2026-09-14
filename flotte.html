@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Notre Flotte • LuxRentCar (06)</title>
+  <meta name="description" content="Découvrez tous les bolides de prestige disponibles à la location dans le 06 : Audi RS6 Avant Miltek, Audi RS3 2025, Golf 8R Performance.">
+
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;0,900;1,700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lux: {
+              bg: '#07070a',
+              surface: '#0e0e13',
+              card: '#121218',
+              red: '#ef4444',
+              redDark: '#b91c1c'
+            }
+          },
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-[#07070a] text-zinc-100 min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center space-x-3 group">
+        <div class="w-8 h-8 rounded-lg overflow-hidden border border-red-500/50 group-hover:border-red-500 transition">
+          <img src="assets/logo/Logo.jpg" alt="LuxRentCar" class="w-full h-full object-cover">
+        </div>
+        <span class="text-sm font-black tracking-tight text-white uppercase group-hover:text-red-500 transition">
+          LUX<span class="text-red-500">RENT</span>CAR
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-zinc-300">
+        <a href="index.html" class="hover:text-red-500 transition">Accueil</a>
+        <a href="flotte.html" class="text-red-500 transition">Notre Flotte</a>
+        <a href="locations.html" class="hover:text-red-500 transition">Localisations & Map</a>
+        <a href="contact.html" class="hover:text-red-500 transition">Contact & Réseaux</a>
+      </nav>
+
+      <a href="https://wa.me/33769016703?text=Bonjour%20LuxRentCar%2C%20je%20souhaite%20r%C3%A9server%20un%20v%C3%A9hicule" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-[0_0_15px_rgba(239,68,68,0.35)] flex items-center gap-1.5">
+        <span class="hidden sm:inline">WhatsApp 7j/7</span>
+        <span class="sm:hidden">WhatsApp</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full flex-grow">
+    
+    <!-- Title & Presentation -->
+    <div class="max-w-3xl mb-12">
+      <span class="text-xs font-mono font-bold uppercase tracking-widest text-red-500 block mb-2">Excellence Automobile 06</span>
+      <h1 class="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight">Notre Flotte de Prestige</h1>
+      <p class="text-xs sm:text-sm text-zinc-400 mt-3 leading-relaxed">
+        Découvrez notre sélection exclusive de véhicules sportifs préparés pour la Côte d'Azur.
+        Cliquez sur le bolide de votre choix pour accéder à sa <strong>fiche complète</strong>, ses <strong>photos haute définition</strong> et son <strong>calendrier de réservation</strong>.
+      </p>
+    </div>
+
+    <!-- Grille des 3 Véhicules -->
+    <div id="fleet-list-container" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+
+    <!-- Conditions Incluses -->
+    <div class="mt-16 p-8 rounded-3xl glass-card border border-zinc-800">
+      <h3 class="text-base font-black uppercase tracking-wider text-white mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+        Conditions Officielles & Services Inclus
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-zinc-300">
+        <div>
+          <span class="font-bold text-white block mb-1">Kilométrage & Assurance</span>
+          <p class="text-zinc-400">250 km / jour inclus sur toute la flotte. Assurance tous risques incluse avec caution bancaire.</p>
+        </div>
+        <div>
+          <span class="font-bold text-white block mb-1">Livraison VIP 7j/7</span>
+          <p class="text-zinc-400">Mise à disposition à Nice Aéroport, Cannes Croisette, Monaco Port Hercule ou votre villa privée.</p>
+        </div>
+        <div>
+          <span class="font-bold text-white block mb-1">Conducteurs Jeunes</span>
+          <p class="text-zinc-400">Location possible pour les moins de 25 ans avec caution adaptée et justificatifs d'expérience.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto bg-zinc-950 border-t border-zinc-900 py-10 text-center text-xs text-zinc-500 space-y-3">
+    <div class="flex items-center justify-center space-x-4 font-semibold uppercase tracking-wider text-[11px] text-zinc-400">
+      <a href="index.html" class="hover:text-white transition">Accueil</a>
+      <span>•</span>
+      <a href="locations.html" class="hover:text-white transition">Localisations & Map</a>
+      <span>•</span>
+      <a href="contact.html" class="hover:text-white transition">Contact & Réseaux</a>
+      <span>•</span>
+      <a href="admin.html" class="hover:text-red-400 transition">Admin</a>
+    </div>
+    <p class="text-[10px] text-zinc-600">
+      © LuxRentCar • Location de prestige Alpes-Maritimes (06)
+    </p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('fleet-list-container');
+      const cars = FleetStore.getCars();
+
+      cars.forEach(car => {
+        const card = document.createElement('div');
+        card.className = 'glass-card rounded-3xl overflow-hidden flex flex-col justify-between group';
+
+        card.innerHTML = `
+          <!-- Visuel -->
+          <div class="relative aspect-[16/10] w-full overflow-hidden bg-black">
+            <img src="${car.images[0]}" alt="${car.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0e] via-transparent to-transparent pointer-events-none"></div>
+
+            <div class="absolute top-3 right-3">
+              <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-red-600 text-white shadow-lg">
+                Dès ${car.prices.dailyWeek} € / j
+              </span>
+            </div>
+
+            <div class="absolute bottom-3 left-3">
+              <span class="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-black/80 text-red-400 border border-red-900/40">
+                ${car.badge}
+              </span>
+            </div>
+          </div>
+
+          <!-- Description & Specs -->
+          <div class="p-6 flex flex-col flex-grow justify-between space-y-4">
+            <div>
+              <h3 class="text-xl font-black uppercase text-white group-hover:text-red-500 transition">${car.name}</h3>
+              <p class="text-xs text-zinc-400 mt-1">${car.subtitle}</p>
+
+              <div class="grid grid-cols-3 gap-2 py-3 mt-3 border-y border-zinc-800/80 text-center font-mono text-xs">
+                <div>
+                  <span class="block text-[9px] text-zinc-500 uppercase">0 - 100</span>
+                  <span class="font-bold text-white">${car.acceleration}</span>
+                </div>
+                <div class="border-x border-zinc-800">
+                  <span class="block text-[9px] text-zinc-500 uppercase">PUISSANCE</span>
+                  <span class="font-bold text-red-400">${car.power}</span>
+                </div>
+                <div>
+                  <span class="block text-[9px] text-zinc-500 uppercase">V-MAX</span>
+                  <span class="font-bold text-white">${car.topSpeed}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bouton Page Complète -->
+            <a href="vehicule.html?id=${car.id}" class="w-full py-3 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-white bg-red-600 hover:bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] text-center transition flex items-center justify-center gap-2">
+              <span>Voir la fiche complète & réserver</span>
+              <span>→</span>
+            </a>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>

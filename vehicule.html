@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Détails du Véhicule • LuxRentCar (06)</title>
+  <meta name="description" content="Fiche complète, tarifs de location et calendrier de disponibilité chez LuxRentCar. Réservez en direct sur la Côte d'Azur.">
+
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;0,900;1,700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            lux: {
+              bg: '#07070a',
+              surface: '#0e0e13',
+              card: '#121218',
+              red: '#ef4444',
+              redDark: '#b91c1c'
+            }
+          },
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-[#07070a] text-zinc-100 min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
+
+  <!-- ==========================================================================
+       BARRE DE NAVIGATION UNIFIÉE
+       ========================================================================== -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo & Retour -->
+      <a href="index.html" class="flex items-center space-x-3 group">
+        <div class="w-8 h-8 rounded-lg overflow-hidden border border-red-500/50 group-hover:border-red-500 transition">
+          <img src="assets/logo/Logo.jpg" alt="LuxRentCar" class="w-full h-full object-cover">
+        </div>
+        <span class="text-sm font-black tracking-tight text-white uppercase group-hover:text-red-500 transition">
+          LUX<span class="text-red-500">RENT</span>CAR
+        </span>
+      </a>
+
+      <!-- Menu Principal -->
+      <nav class="hidden md:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider text-zinc-300">
+        <a href="index.html" class="hover:text-red-500 transition">Accueil</a>
+        <a href="flotte.html" class="text-red-500 transition">Notre Flotte</a>
+        <a href="locations.html" class="hover:text-red-500 transition">Localisations & Map</a>
+        <a href="contact.html" class="hover:text-red-500 transition">Contact & Réseaux</a>
+      </nav>
+
+      <!-- Bouton WhatsApp Header -->
+      <div class="flex items-center space-x-3">
+        <a href="https://wa.me/33769016703?text=Bonjour%20LuxRentCar%2C%20je%20souhaite%20r%C3%A9server%20un%20v%C3%A9hicule" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-[0_0_15px_rgba(239,68,68,0.35)] flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.742.964 1.201.662.591 1.221.774 1.394.86.173.086.274.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+          <span class="hidden sm:inline">WhatsApp</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       FIL D'ARIANE & TITRE PAGE
+       ========================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+    
+    <!-- Fil d'Ariane -->
+    <div class="flex items-center space-x-2 text-xs font-medium text-zinc-500 mb-6">
+      <a href="index.html" class="hover:text-zinc-300 transition">Accueil</a>
+      <span>/</span>
+      <a href="flotte.html" class="hover:text-zinc-300 transition">Notre Flotte</a>
+      <span>/</span>
+      <span class="text-red-500 font-bold" id="car-breadcrumb">Bolide</span>
+    </div>
+
+    <!-- En-tête Titre & Badge -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 border-b border-zinc-900 pb-6">
+      <div>
+        <div class="flex items-center space-x-3 mb-2">
+          <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-600/90 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]" id="car-badge-pill">
+            V8 BITURBO
+          </span>
+          <span class="text-xs font-mono uppercase text-zinc-400" id="car-category-text">Super Break</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight" id="car-title">
+          Nom du Véhicule
+        </h1>
+        <p class="text-xs sm:text-sm text-zinc-400 mt-1" id="car-subtitle">
+          Sous-titre et spécifications
+        </p>
+      </div>
+
+      <div class="text-left sm:text-right">
+        <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 block">Tarif de base</span>
+        <span class="text-2xl sm:text-3xl font-black text-white font-mono" id="car-starting-price">-- €</span>
+        <span class="text-xs text-zinc-400">/ jour (semaine)</span>
+      </div>
+    </div>
+
+    <!-- Grille Principale en 2 Colonnes -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Colonne Gauche : Galerie Photo & Caractéristiques (7 colonnes) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Grand Visuel Actif -->
+        <div class="relative aspect-[16/10] w-full rounded-3xl overflow-hidden bg-zinc-950 border border-zinc-800 shadow-2xl">
+          <img id="car-main-img" src="" alt="Véhicule" class="w-full h-full object-cover transition-opacity duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+        </div>
+
+        <!-- Miniatures Cliquables -->
+        <div id="car-thumbnails-container" class="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none"></div>
+
+        <!-- Spécifications Techniques 3 Colonnes -->
+        <div class="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 text-center font-mono">
+          <div>
+            <span class="block text-[10px] text-zinc-500 uppercase tracking-wider mb-1">PUISSANCE</span>
+            <span id="spec-power" class="text-base sm:text-lg font-black text-red-400">--</span>
+          </div>
+          <div class="border-x border-zinc-800">
+            <span class="block text-[10px] text-zinc-500 uppercase tracking-wider mb-1">0 - 100 KM/H</span>
+            <span id="spec-accel" class="text-base sm:text-lg font-black text-white">--</span>
+          </div>
+          <div>
+            <span class="block text-[10px] text-zinc-500 uppercase tracking-wider mb-1">V-MAX</span>
+            <span id="spec-speed" class="text-base sm:text-lg font-black text-white">--</span>
+          </div>
+        </div>
+
+        <!-- Description Complète & Équipements -->
+        <div class="p-6 rounded-3xl glass-card space-y-4">
+          <h3 class="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            Présentation & Sonorité
+          </h3>
+          <p id="car-description" class="text-xs sm:text-sm text-zinc-300 leading-relaxed"></p>
+
+          <div class="pt-3 border-t border-zinc-800">
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">Équipements & Options Clés :</span>
+            <ul id="car-features-list" class="space-y-1.5 text-xs text-zinc-300"></ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Colonne Droite : Grille Tarifaire, Calendrier & Réservation VIP (5 colonnes) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Carte Grille Tarifaire Officielle -->
+        <div class="glass-card p-6 rounded-3xl border border-zinc-800">
+          <div class="flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
+            <h3 class="text-sm font-black uppercase tracking-wider text-white">Grille Tarifaire Exclusivité</h3>
+            <span class="text-[10px] font-mono text-zinc-400">250 km / jour inclus</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs font-mono">
+            <div class="flex justify-between items-center text-zinc-300">
+              <span class="font-sans text-zinc-400">Journée Semaine (Lun-Jeu)</span>
+              <span class="font-bold text-white" id="price-daily">-- € / j</span>
+            </div>
+            <div class="flex justify-between items-center text-zinc-300">
+              <span class="font-sans text-zinc-400">Pack Semaine (Lun-Ven • 5j)</span>
+              <span class="font-bold text-emerald-400" id="price-packWeek">-- €</span>
+            </div>
+            <div class="flex justify-between items-center text-zinc-300">
+              <span class="font-sans text-zinc-400">Week-end (Ven 18h - Dim 20h)</span>
+              <span class="font-bold text-white" id="price-weekend">-- €</span>
+            </div>
+            <div class="flex justify-between items-center text-zinc-300">
+              <span class="font-sans text-zinc-400">Week-end Complet (Ven 18h - Lun 10h)</span>
+              <span class="font-bold text-amber-400" id="price-weekendFull">-- €</span>
+            </div>
+            <div class="pt-3 border-t border-zinc-800 flex justify-between items-center text-[11px] text-zinc-400">
+              <span class="font-sans">Caution standard</span>
+              <span class="font-bold text-zinc-200" id="price-deposit">-- €</span>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-zinc-500">
+              <span class="font-sans">Caution conducteur (-25 ans)</span>
+              <span class="font-bold text-zinc-400" id="price-depositYoung">-- €</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendrier Interactif Sombre & Calculateur -->
+        <div class="glass-card p-6 rounded-3xl border border-zinc-800 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <h3 class="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Disponibilités & Réservation
+            </h3>
+            <span class="text-[10px] text-zinc-400">Cliquez pour choisir</span>
+          </div>
+
+          <!-- Conteneur Calendrier -->
+          <div id="car-calendar-container" class="w-full"></div>
+
+          <!-- Récapitulatif Devis Dynamique -->
+          <div class="p-3.5 rounded-2xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between text-xs">
+            <div>
+              <span id="calc-period-text" class="block font-bold text-white">Sélectionnez vos dates</span>
+              <span id="calc-breakdown-text" class="text-[10px] text-zinc-500">Cliquez sur le calendrier</span>
+            </div>
+            <div class="text-right font-mono">
+              <span class="text-[9px] uppercase text-zinc-500 block">Total Devis</span>
+              <span id="calc-total-price" class="text-lg font-black text-red-500">-- €</span>
+            </div>
+          </div>
+
+          <!-- Case conducteur -25 ans -->
+          <div class="flex items-center space-x-2 px-1 text-xs">
+            <input type="checkbox" id="young-checkbox" class="w-4 h-4 rounded text-red-600 bg-zinc-900 border-zinc-800 focus:ring-0">
+            <label for="young-checkbox" class="text-zinc-400 cursor-pointer">
+              Conducteur de moins de 25 ans
+            </label>
+          </div>
+
+          <!-- Sélecteur de Prise en Charge dans le 06 -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+              Lieu de livraison souhaité dans le 06 :
+            </label>
+            <select id="pickup-location-select" class="w-full px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 focus:border-red-500 focus:outline-none"></select>
+          </div>
+
+          <!-- Boutons de Réservation Directe -->
+          <div class="pt-2 space-y-2.5">
+            <button type="button" id="book-whatsapp-btn" class="w-full py-3.5 px-4 rounded-2xl font-black uppercase tracking-wider text-xs sm:text-sm text-white bg-red-600 hover:bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)] transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.742.964 1.201.662.591 1.221.774 1.394.86.173.086.274.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+              Réserver sur WhatsApp (07 69 01 67 03)
+            </button>
+
+            <a href="tel:0769016703" class="w-full py-2.5 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-zinc-300 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-center transition block">
+              Appel direct : 07 69 01 67 03
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==========================================================================
+         AUTRES VÉHICULES DE LA FLOTTE
+         ========================================================================== -->
+    <div class="mt-20 pt-10 border-t border-zinc-900">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-lg font-black uppercase text-white">Découvrez nos autres bolides</h3>
+          <p class="text-xs text-zinc-500">Sélection de supercars disponibles dans le 06</p>
+        </div>
+        <a href="flotte.html" class="text-xs font-bold uppercase tracking-wider text-red-500 hover:text-white transition">
+          Voir toute la flotte →
+        </a>
+      </div>
+
+      <div id="other-cars-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================================================
+       PIED DE PAGE
+       ========================================================================== -->
+  <footer class="mt-auto bg-zinc-950 border-t border-zinc-900 py-10 text-center text-xs text-zinc-500 space-y-3">
+    <div class="flex items-center justify-center space-x-4 font-semibold uppercase tracking-wider text-[11px] text-zinc-400">
+      <a href="flotte.html" class="hover:text-white transition">Flotte</a>
+      <span>•</span>
+      <a href="locations.html" class="hover:text-white transition">Localisations & Map</a>
+      <span>•</span>
+      <a href="contact.html" class="hover:text-white transition">Contact & Réseaux</a>
+      <span>•</span>
+      <a href="admin.html" class="hover:text-red-400 transition">Admin</a>
+    </div>
+    <p class="text-[10px] text-zinc-600">
+      © LuxRentCar • Location de prestige Alpes-Maritimes (06) : Nice, Cannes, Monaco, St-Tropez
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/calendar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Récupération de l'ID du bolide dans l'URL (ex: vehicule.html?id=rs6)
+      const urlParams = new URLSearchParams(window.location.search);
+      let carId = urlParams.get('id') || 'rs6';
+
+      let car = FleetStore.getCarById(carId);
+      if (!car) {
+        car = FleetStore.getCars()[0];
+        carId = car.id;
+      }
+
+      // Mise à jour Titres & Badges
+      document.title = `${car.name} • LuxRentCar (06)`;
+      document.getElementById('car-breadcrumb').textContent = car.name;
+      document.getElementById('car-title').textContent = car.name;
+      document.getElementById('car-subtitle').textContent = car.subtitle;
+      document.getElementById('car-badge-pill').textContent = car.badge;
+      document.getElementById('car-category-text').textContent = car.category;
+      document.getElementById('car-starting-price').textContent = `${car.prices.dailyWeek} €`;
+
+      // Specs
+      document.getElementById('spec-power').textContent = car.power;
+      document.getElementById('spec-accel').textContent = car.acceleration;
+      document.getElementById('spec-speed').textContent = car.topSpeed;
+
+      // Description & Features
+      document.getElementById('car-description').textContent = car.description;
+      const featList = document.getElementById('car-features-list');
+      featList.innerHTML = '';
+      (car.features || []).forEach(f => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center gap-2';
+        li.innerHTML = `<span class="text-red-500 font-bold">✓</span> <span>${f}</span>`;
+        featList.appendChild(li);
+      });
+
+      // Tarifs
+      document.getElementById('price-daily').textContent = `${car.prices.dailyWeek} € / j`;
+      document.getElementById('price-packWeek').textContent = `${car.prices.packWeek} €`;
+      document.getElementById('price-weekend').textContent = `${car.prices.weekend} €`;
+      document.getElementById('price-weekendFull').textContent = `${car.prices.weekendFull} €`;
+      document.getElementById('price-deposit').textContent = `${car.prices.deposit.toLocaleString()} €`;
+      document.getElementById('price-depositYoung').textContent = `${car.prices.depositYoung.toLocaleString()} €`;
+
+      // Galerie Photo & Miniatures
+      const mainImg = document.getElementById('car-main-img');
+      mainImg.src = car.images[0] || 'assets/logo/Logo.jpg';
+
+      const thumbsContainer = document.getElementById('car-thumbnails-container');
+      thumbsContainer.innerHTML = '';
+
+      car.images.forEach((img, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `flex-shrink-0 w-16 h-11 md:w-20 md:h-14 rounded-xl overflow-hidden border ${idx === 0 ? 'border-red-500 scale-105' : 'border-zinc-800 opacity-60'} hover:opacity-100 transition`;
+        btn.innerHTML = `<img src="${img}" alt="Miniature ${idx+1}" class="w-full h-full object-cover">`;
+
+        btn.addEventListener('click', () => {
+          mainImg.src = img;
+          thumbsContainer.querySelectorAll('button').forEach(b => {
+            b.classList.remove('border-red-500', 'scale-105');
+            b.classList.add('border-zinc-800', 'opacity-60');
+          });
+          btn.classList.add('border-red-500', 'scale-105');
+          btn.classList.remove('border-zinc-800', 'opacity-60');
+        });
+
+        thumbsContainer.appendChild(btn);
+      });
+
+      // Remplir la sélection des lieux
+      const locSelect = document.getElementById('pickup-location-select');
+      CONTACT_INFO.spots.forEach(spot => {
+        const opt = document.createElement('option');
+        opt.value = spot;
+        opt.textContent = spot;
+        locSelect.appendChild(opt);
+      });
+
+      // Calendrier Interactif Sombre
+      const cal = new DarkCalendar('car-calendar-container', {
+        carId: car.id,
+        mode: 'booking',
+        onSelectionChange: (quote) => {
+          updateQuote(quote);
+        }
+      });
+
+      const youngCheckbox = document.getElementById('young-checkbox');
+      youngCheckbox.addEventListener('change', () => {
+        updateQuote(cal.getCalculation(youngCheckbox.checked));
+      });
+
+      function updateQuote(quote) {
+        const periodEl = document.getElementById('calc-period-text');
+        const breakdownEl = document.getElementById('calc-breakdown-text');
+        const totalEl = document.getElementById('calc-total-price');
+
+        if (!quote || !quote.startDate) {
+          periodEl.textContent = 'Sélectionnez vos dates';
+          breakdownEl.textContent = 'Cliquez sur le calendrier ci-dessus';
+          totalEl.textContent = '-- €';
+          return;
+        }
+
+        if (quote.daysCount === 1) {
+          periodEl.textContent = `Date : ${formatDate(quote.startDate)} (1 jour)`;
+        } else {
+          periodEl.textContent = `Du ${formatDate(quote.startDate)} au ${formatDate(quote.endDate)} (${quote.daysCount} jours)`;
+        }
+
+        breakdownEl.textContent = `${quote.breakdownText} • Caution: ${quote.deposit.toLocaleString()} €`;
+        totalEl.textContent = `${quote.totalPrice.toLocaleString()} €`;
+      }
+
+      function formatDate(str) {
+        if (!str) return '';
+        const [y, m, d] = str.split('-');
+        return `${d}/${m}/${y}`;
+      }
+
+      // Bouton Réserver via WhatsApp
+      const waBtn = document.getElementById('book-whatsapp-btn');
+      waBtn.addEventListener('click', () => {
+        const quote = cal.getCalculation(youngCheckbox.checked);
+        const location = locSelect.value;
+
+        let msg = `🏎️ *DEMANDE DE RÉSERVATION LUXRENTCAR* 🏎️\n\n`;
+        msg += `*Bolide :* ${car.name}\n`;
+        msg += `*Motorisation :* ${car.power} (${car.sound})\n`;
+
+        if (quote && quote.startDate) {
+          msg += `*Période :* Du ${formatDate(quote.startDate)} au ${formatDate(quote.endDate)} (${quote.daysCount} jours)\n`;
+          msg += `*Formule :* ${quote.breakdownText}\n`;
+          msg += `*Montant estimé :* ${quote.totalPrice.toLocaleString()} €\n`;
+        } else {
+          msg += `*Période :* Dates à fixer ensemble\n`;
+        }
+
+        msg += `*Caution :* ${(youngCheckbox.checked ? car.prices.depositYoung : car.prices.deposit).toLocaleString()} €\n`;
+        msg += `*Lieu de livraison :* ${location}\n\n`;
+        msg += `Bonjour LuxRentCar, merci de me confirmer la disponibilité !`;
+
+        const url = `https://wa.me/${CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      });
+
+      // Grille des autres voitures
+      const otherGrid = document.getElementById('other-cars-grid');
+      const allCars = FleetStore.getCars().filter(c => c.id !== car.id);
+      allCars.forEach(other => {
+        const card = document.createElement('a');
+        card.href = `vehicule.html?id=${other.id}`;
+        card.className = 'glass-card p-4 rounded-2xl flex items-center space-x-4 group hover:border-red-500/50 transition';
+        card.innerHTML = `
+          <img src="${other.images[0]}" alt="${other.name}" class="w-24 h-16 object-cover rounded-xl border border-zinc-800 group-hover:scale-105 transition duration-300">
+          <div>
+            <span class="text-[10px] font-mono text-red-400 font-bold uppercase">${other.badge}</span>
+            <h4 class="text-sm font-black uppercase text-white group-hover:text-red-500 transition">${other.name}</h4>
+            <span class="text-xs font-mono text-zinc-400">Dès ${other.prices.dailyWeek} € / j</span>
+          </div>
+        `;
+        otherGrid.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>

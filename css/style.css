@@ -1,19 +1,18 @@
 @charset "UTF-8";
 
 /* ==========================================================================
-   LuxRentCar - Ultra-Soft & High-End Minimalist Luxury
-   French Riviera : Monaco • Cannes • Nice • Saint-Tropez
+   LuxRentCar - Architecture Multi-Pages Haut de Gamme
+   Design : Carbon Obsidian, Dark Glass, Red Sport Neon & Leaflet Dark Map
    ========================================================================== */
 
 :root {
-  --lux-bg: #060608;
-  --lux-surface: #0c0c10;
-  --lux-glass: rgba(12, 12, 16, 0.72);
-  --lux-glass-modal: rgba(10, 10, 14, 0.94);
-  --lux-border: rgba(255, 255, 255, 0.06);
-  --lux-border-hover: rgba(239, 68, 68, 0.4);
+  --lux-bg: #07070a;
+  --lux-surface: #0e0e13;
+  --lux-surface-glass: rgba(14, 14, 19, 0.85);
+  --lux-border: rgba(255, 255, 255, 0.07);
+  --lux-border-hover: rgba(239, 68, 68, 0.45);
   --lux-red: #ef4444;
-  --lux-red-soft: rgba(239, 68, 68, 0.15);
+  --lux-red-glow: rgba(239, 68, 68, 0.35);
   --lux-text: #f4f4f5;
   --lux-muted: #71717a;
 }
@@ -22,7 +21,7 @@ html {
   scroll-behavior: smooth;
   background-color: var(--lux-bg);
   color: var(--lux-text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -31,84 +30,52 @@ body {
   padding: 0;
   overflow-x: hidden;
   background-color: var(--lux-bg);
-  background-image: radial-gradient(circle at 50% 0%, rgba(239, 68, 68, 0.04) 0%, transparent 60%);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(239, 68, 68, 0.05) 0%, transparent 60%),
+    linear-gradient(to bottom, rgba(10, 10, 14, 0.4), #07070a);
   background-attachment: fixed;
 }
 
-/* Scrollbar ultra fine */
+/* Scrollbar fine */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #060608;
+  background: #07070a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f1f26;
+  background: #27272a;
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #ef4444;
 }
 
-/* Carte Bolide Minimaliste & Soft */
-.car-card-minimal {
-  position: relative;
-  background: #0a0a0e;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 1.5rem;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+/* Glassmorphism Panel */
+.glass-panel {
+  background: var(--lux-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--lux-border);
 }
 
-.car-card-minimal:hover {
-  border-color: rgba(239, 68, 68, 0.35);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9), 0 0 30px -10px rgba(239, 68, 68, 0.18);
+.glass-card {
+  background: rgba(18, 18, 24, 0.7);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: var(--lux-border-hover);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(239, 68, 68, 0.2);
   transform: translateY(-4px);
 }
 
-.car-card-minimal .car-img-cover {
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s;
-}
-
-.car-card-minimal:hover .car-img-cover {
-  transform: scale(1.04);
-}
-
-/* Modal Détails Plein Écran / Soft Drawer */
-.modal-backdrop-blur {
-  background: rgba(4, 4, 6, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.modal-content-animated {
-  animation: modalIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Calendrier Soft & Sombre */
-.lux-calendar-card {
-  background: #09090d;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 1.25rem;
-  overflow: hidden;
-}
-
-/* Animations Logo Splash */
+/* Intro Splash Propre & Fluide */
 #intro-splash {
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
 }
 #intro-splash.fade-out {
   opacity: 0;
@@ -119,7 +86,7 @@ body {
 .laser-path {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
-  animation: laserDraw 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: laserDraw 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @keyframes laserDraw {
@@ -149,7 +116,7 @@ body {
     border-color: rgba(239, 68, 68, 0.4);
   }
   50% {
-    box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
     border-color: rgba(239, 68, 68, 0.8);
   }
 }
@@ -184,6 +151,48 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.6;
+  opacity: 0.55;
   pointer-events: none;
+}
+
+/* Styles Leaflet Dark Map */
+.leaflet-container {
+  background: #0a0a0d !important;
+  font-family: inherit !important;
+}
+.leaflet-popup-content-wrapper {
+  background: #101017 !important;
+  color: #fff !important;
+  border: 1px solid rgba(239, 68, 68, 0.5) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+}
+.leaflet-popup-tip {
+  background: #101017 !important;
+}
+.custom-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
+  animation: pinPulse 2s infinite ease-in-out;
+}
+
+@keyframes pinPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); box-shadow: 0 0 25px rgba(239, 68, 68, 0.9); }
+}
+
+/* Calendrier Soft & Sombre */
+.lux-calendar-card {
+  background: #09090d;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+  overflow: hidden;
 }
