@@ -139,6 +139,32 @@
       </div>
     </div>
 
+    <!-- Bannière Club Privé & Offres VIP (Lead Capture) -->
+    <div class="glass-card rounded-3xl p-8 border border-zinc-800 relative overflow-hidden text-center max-w-4xl mx-auto my-12 shadow-2xl">
+      <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 max-w-xl mx-auto space-y-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/80 text-red-400 border border-red-800/60 text-[10px] font-mono font-bold uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+          OFFRES WEEK-END & NOUVEAUX BOLIDES
+        </span>
+        <h3 class="text-2xl font-black uppercase text-white tracking-tight">
+          Rejoignez le Club Privé LuxRentCar
+        </h3>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Inscrivez-vous pour recevoir en avant-première nos offres privées, disponibilités de dernière minute et tarifs préférentiels sur toute la French Riviera.
+        </p>
+        <form id="fleet-lead-form" class="flex flex-col sm:flex-row gap-2 pt-2">
+          <input type="text" id="fleet-lead-contact" placeholder="Email ou Numéro de téléphone..." required class="flex-grow px-4 py-3 rounded-xl bg-black/70 border border-zinc-800 text-white text-xs placeholder-zinc-500 focus:border-red-500 focus:outline-none transition">
+          <button type="submit" class="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold uppercase tracking-wider text-xs transition shadow-[0_0_15px_rgba(239,68,68,0.4)] whitespace-nowrap">
+            S'inscrire aux offres
+          </button>
+        </form>
+        <p id="fleet-lead-success" class="hidden text-xs text-emerald-400 font-bold font-mono">
+          ✓ Inscription confirmée ! Vous recevrez nos offres en avant-première.
+        </p>
+      </div>
+    </div>
+
   </main>
 
   <!-- Footer -->
@@ -178,9 +204,14 @@
 
         filtered.forEach(car => {
           const card = document.createElement('div');
-          card.className = 'glass-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-red-500/50 transition-all duration-300 shadow-xl';
+          const isAvail = car.isAvailable !== false;
+          card.className = `glass-card rounded-3xl overflow-hidden flex flex-col justify-between group border transition-all duration-300 shadow-xl ${
+            isAvail ? 'border-zinc-800/80 hover:border-red-500/50' : 'border-red-950/60 bg-zinc-950/80 opacity-90'
+          }`;
 
-          const waText = encodeURIComponent(`Bonjour LuxRentCar, je souhaite réserver le véhicule : ${car.name} (${car.subtitle}). Pouvez-vous me confirmer les disponibilités ?`);
+          const waText = isAvail
+            ? encodeURIComponent(`Bonjour LuxRentCar, je souhaite réserver le véhicule : ${car.name} (${car.subtitle}). Pouvez-vous me confirmer les disponibilités ?`)
+            : encodeURIComponent(`Bonjour LuxRentCar, le véhicule ${car.name} (${car.subtitle}) est actuellement noté comme non disponible. Pouvez-vous me prévenir dès qu'il se libère ?`);
           const waUrl = `https://wa.me/33769016703?text=${waText}`;
 
           card.innerHTML = `
@@ -189,19 +220,42 @@
               <img src="${car.images[0]}" alt="${car.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out" loading="lazy">
               <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b10] via-transparent to-transparent pointer-events-none"></div>
 
-              <!-- Badge Prix d'appel -->
-              <div class="absolute top-3 right-3">
+              <!-- Badge Disponibilité en haut à gauche -->
+              <div class="absolute top-3 left-3 z-10">
+                ${isAvail ? `
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-950/90 text-emerald-400 border border-emerald-600/60 shadow-[0_0_10px_rgba(16,185,129,0.35)] flex items-center gap-1.5 backdrop-blur-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    DISPONIBLE
+                  </span>
+                ` : `
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-zinc-950/90 text-red-400 border border-red-800/80 shadow-[0_0_10px_rgba(239,68,68,0.3)] flex items-center gap-1.5 backdrop-blur-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    NON DISPONIBLE
+                  </span>
+                `}
+              </div>
+
+              <!-- Badge Prix d'appel en haut à droite -->
+              <div class="absolute top-3 right-3 z-10">
                 <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.5)]">
                   ${car.prices.dailyWeek} € / jour
                 </span>
               </div>
 
-              <!-- Badge Spécifique -->
-              <div class="absolute bottom-3 left-3">
+              <!-- Badge Spécifique en bas à gauche -->
+              <div class="absolute bottom-3 left-3 z-10">
                 <span class="px-2.5 py-1 rounded-lg text-[10px] font-mono font-black uppercase bg-black/85 text-red-400 border border-red-900/60 backdrop-blur-md">
                   ${car.badge}
                 </span>
               </div>
+
+              ${!isAvail ? `
+                <div class="absolute inset-0 bg-black/45 backdrop-grayscale-[20%] flex items-center justify-center pointer-events-none z-10">
+                  <span class="px-3.5 py-1 rounded-xl bg-black/90 border border-red-700/80 text-red-400 font-mono font-bold text-xs uppercase tracking-wider shadow-2xl">
+                    Actuellement Non Disponible
+                  </span>
+                </div>
+              ` : ''}
             </div>
 
             <!-- Détails en Texte -->
@@ -267,16 +321,47 @@
                   <span class="text-red-500">→</span>
                 </a>
 
-                <a href="${waUrl}" target="_blank" class="w-full py-2.5 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-white bg-red-600 hover:bg-red-500 text-center transition flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.742.964 1.201.662.591 1.221.774 1.394.86.173.086.274.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
-                  <span>Réserver sur WhatsApp</span>
-                </a>
+                ${isAvail ? `
+                  <a href="${waUrl}" target="_blank" class="w-full py-2.5 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-white bg-red-600 hover:bg-red-500 text-center transition flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.742.964 1.201.662.591 1.221.774 1.394.86.173.086.274.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+                    <span>Réserver sur WhatsApp</span>
+                  </a>
+                ` : `
+                  <a href="${waUrl}" target="_blank" class="w-full py-2.5 px-4 rounded-xl font-bold uppercase tracking-wider text-xs text-white bg-zinc-900 hover:bg-zinc-800 border border-red-500/50 text-center transition flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                    <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.303c-.087.087-.177.182-.076.355.101.173.449.742.964 1.201.662.591 1.221.774 1.394.86.173.086.274.072.376-.043.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+                    <span>M'alerter quand dispo</span>
+                  </a>
+                `}
               </div>
 
             </div>
           `;
 
           container.appendChild(card);
+        });
+      }
+
+      // Lead capture form
+      const leadForm = document.getElementById('fleet-lead-form');
+      if (leadForm) {
+        leadForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('fleet-lead-contact');
+          const val = input.value.trim();
+          if (!val) return;
+
+          const isEmail = val.includes('@');
+          try {
+            NetworkStore.addLead({
+              email: isEmail ? val : '',
+              phone: !isEmail ? val : '',
+              source: 'Page Flotte (Club Privé)'
+            });
+            input.value = '';
+            document.getElementById('fleet-lead-success').classList.remove('hidden');
+          } catch (err) {
+            alert(err.message || 'Erreur lors de l\'enregistrement.');
+          }
         });
       }
 

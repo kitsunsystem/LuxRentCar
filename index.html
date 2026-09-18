@@ -40,13 +40,23 @@
 <body class="bg-[#07070a] text-zinc-100 min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
 
   <!-- ==========================================================================
-       ENTRÉE PROPRE & RAFFINÉE AVEC LOGO ET TRACÉ LASER
+       ENTRÉE ULTRA-STYLÉE COCKPIT AVEC SON RACE.MP3 & DÉVERROUILLAGE FADE
        ========================================================================== -->
-  <div id="intro-splash" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#07070a] px-4">
-    <div class="relative flex flex-col items-center max-w-sm w-full text-center">
+  <div id="intro-splash" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#050508] px-4 overflow-hidden">
+    
+    <!-- Audio element pour race.mp3 -->
+    <audio id="engine-race-audio" src="assets/audio/race.mp3" preload="auto"></audio>
+
+    <!-- Faisceau Laser Rapide au passage du bolide -->
+    <div class="race-streak-pass">
+      <div id="race-laser-beam" class="race-streak-beam"></div>
+    </div>
+
+    <!-- Conteneur Cockpit Central -->
+    <div class="relative flex flex-col items-center max-w-md w-full text-center z-10">
       
-      <!-- Tracé Laser Silhouette Supercar -->
-      <div class="w-64 h-28 mb-3 flex items-center justify-center">
+      <!-- Silhouette Laser Logo -->
+      <div class="w-64 h-24 mb-2 flex items-center justify-center relative">
         <svg viewBox="0 0 300 120" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 95 L290 95" stroke="#ef4444" stroke-width="2" stroke-linecap="round" class="laser-path" opacity="0.5"/>
           <path d="M25 90 C45 90 60 85 85 75 C110 65 140 40 175 40 C210 40 235 55 260 75 C275 85 285 90 290 90" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round" class="laser-path"/>
@@ -55,18 +65,51 @@
         </svg>
       </div>
 
-      <!-- Logo rond avec pulsation douce -->
-      <div class="w-20 h-20 rounded-2xl overflow-hidden border border-red-500/40 pulse-glow shadow-[0_0_25px_rgba(239,68,68,0.4)] mb-4 bg-black">
+      <!-- Logo rond avec lueur et reflet -->
+      <div id="intro-logo-box" class="w-20 h-20 rounded-2xl overflow-hidden border border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.5)] mb-3 bg-black transition-all duration-700">
         <img src="assets/logo/Logo.jpg" alt="LuxRentCar Logo" class="w-full h-full object-cover">
       </div>
 
-      <h1 class="text-2xl font-black tracking-wider uppercase text-white">LUX RENT CAR</h1>
-      <p class="text-[10px] tracking-[0.25em] text-zinc-400 uppercase font-semibold mt-1">06 FRENCH RIVIERA</p>
-      <p class="text-[10px] font-mono text-red-500 uppercase tracking-widest mt-0.5">Nice • Cannes • Monaco • St-Tropez</p>
+      <h1 class="text-2xl sm:text-3xl font-black tracking-wider uppercase text-white">LUX RENT CAR</h1>
+      <p class="text-[10px] tracking-[0.3em] text-zinc-400 uppercase font-semibold mt-0.5">06 FRENCH RIVIERA</p>
 
-      <button id="skip-intro-btn" class="mt-6 px-4 py-1 rounded-full border border-zinc-800 text-[10px] font-mono uppercase tracking-widest text-zinc-400 hover:text-white hover:border-red-500/50 transition">
-        Entrer sur le site →
-      </button>
+      <!-- Affichage Télémétrie / RPM lors du lancement -->
+      <div id="intro-telemetry" class="hidden my-4 py-2.5 px-6 rounded-2xl bg-zinc-950/90 border border-red-500/40 font-mono text-xs text-zinc-300 backdrop-blur-md shadow-2xl">
+        <div class="flex items-center justify-center gap-6">
+          <div>
+            <span class="block text-[9px] text-zinc-500">SPEED</span>
+            <span id="telemetry-speed" class="text-lg font-black text-white">0</span> <span class="text-[10px] text-red-500">KM/H</span>
+          </div>
+          <div class="h-6 w-px bg-zinc-800"></div>
+          <div>
+            <span class="block text-[9px] text-zinc-500">ENGINE RPM</span>
+            <span id="telemetry-rpm" class="text-lg font-black text-red-400">1 200</span> <span class="text-[10px] text-zinc-500">TR/MIN</span>
+          </div>
+        </div>
+        <div class="text-[10px] font-bold text-emerald-400 mt-1 uppercase tracking-widest animate-pulse">
+          ⚡ LAUNCH CONTROL ACTIF
+        </div>
+      </div>
+
+      <!-- Bouton Start Engine Supercar -->
+      <div id="start-engine-container" class="mt-6 flex flex-col items-center">
+        <div class="relative mb-3">
+          <div class="start-engine-ring"></div>
+          <button id="start-engine-btn" type="button" class="start-engine-btn group">
+            <svg class="w-6 h-6 text-white mb-0.5 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span class="text-[9px] font-black tracking-wider uppercase text-white font-mono">START</span>
+            <span class="text-[7px] font-bold text-red-200 uppercase font-mono">ENGINE</span>
+          </button>
+        </div>
+
+        <span class="text-[10px] font-mono text-red-400 font-bold uppercase tracking-widest">
+          CLIQUEZ POUR DÉMARRER (AVEC SON)
+        </span>
+        <button id="skip-intro-btn" class="mt-4 text-[10px] font-mono uppercase tracking-widest text-zinc-500 hover:text-zinc-300 transition underline underline-offset-4">
+          Accéder directement sans son →
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -335,6 +378,42 @@
   </section>
 
   <!-- ==========================================================================
+       SECTION CLUB PRIVÉ / NETWORK LEAD CAPTURE
+       ========================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <div class="glass-card rounded-3xl p-8 sm:p-10 border border-zinc-800 text-center relative overflow-hidden shadow-2xl">
+      <div class="absolute -top-24 -left-24 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-2xl mx-auto space-y-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/80 text-red-400 border border-red-800/60 text-[10px] font-mono font-bold uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+          OFFRES PRIVÉES & RÉDUCTIONS WEEK-END
+        </span>
+
+        <h3 class="text-2xl sm:text-3xl font-black uppercase text-white tracking-tight">
+          Rejoignez le Club Privé LuxRentCar 06
+        </h3>
+
+        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+          Renseignez votre e-mail ou téléphone pour être notifié en temps réel des nouveaux arrivages (Supercars, Ferrari, BMW M, Audi RS) et bénéficier de remises exclusives sur Monaco, Cannes et Nice.
+        </p>
+
+        <form id="home-lead-form" class="flex flex-col sm:flex-row gap-2.5 pt-3 max-w-lg mx-auto">
+          <input type="text" id="home-lead-contact" placeholder="Votre Email ou Téléphone..." required class="flex-grow px-4 py-3 rounded-xl bg-black/80 border border-zinc-800 text-white text-xs placeholder-zinc-500 focus:border-red-500 focus:outline-none transition">
+          <button type="submit" class="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-wider text-xs transition shadow-[0_0_20px_rgba(239,68,68,0.4)] whitespace-nowrap">
+            S'inscrire
+          </button>
+        </form>
+
+        <p id="home-lead-success" class="hidden text-xs text-emerald-400 font-bold font-mono">
+          ✓ Inscription confirmée ! Bienvenue dans le Club Privé.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
        FOOTER UNIFIÉ
        ========================================================================== -->
   <footer class="mt-auto bg-zinc-950 border-t border-zinc-900 py-10 text-center text-xs text-zinc-500 space-y-3">
@@ -352,21 +431,103 @@
     </p>
   </footer>
 
+  <!-- ==========================================================================
+       MODAL VIP CLUB & OFFRES PRIVÉES (INVITATION APRÈS ENTRÉE)
+       ========================================================================== -->
+  <div id="vip-club-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-red-500/30 max-w-md w-full relative shadow-[0_0_50px_rgba(239,68,68,0.25)] animate-scale-up">
+      <button type="button" id="close-vip-modal-btn" class="absolute top-4 right-4 text-zinc-500 hover:text-white p-1" title="Fermer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="text-center space-y-3">
+        <div class="w-12 h-12 rounded-2xl bg-red-950/80 border border-red-600/50 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(239,68,68,0.4)]">
+          <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        
+        <span class="inline-block text-[10px] font-mono uppercase font-bold tracking-widest text-red-400 bg-red-950/60 px-3 py-1 rounded-full border border-red-800/60">
+          OFFRES PRIVÉES & PROMOS 06
+        </span>
+
+        <h3 class="text-xl sm:text-2xl font-black uppercase text-white tracking-tight">
+          Club Privé LuxRentCar
+        </h3>
+
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Inscrivez-vous avec votre e-mail ou numéro de téléphone pour ne rien rater de nos actualités, tarifs réduits week-end et nouveaux bolides sur la Côte d'Azur.
+        </p>
+
+        <form id="vip-club-form" class="space-y-3 pt-2 text-left text-xs">
+          <div>
+            <label class="block text-zinc-400 font-semibold mb-1">Adresse Email</label>
+            <input type="email" id="vip-input-email" placeholder="votre.email@exemple.com" class="w-full px-3 py-2.5 rounded-xl bg-black/70 border border-zinc-800 text-white placeholder-zinc-500 focus:border-red-500 focus:outline-none transition">
+          </div>
+
+          <div>
+            <label class="block text-zinc-400 font-semibold mb-1">Numéro Téléphone / WhatsApp</label>
+            <input type="tel" id="vip-input-phone" placeholder="06 12 34 56 78" class="w-full px-3 py-2.5 rounded-xl bg-black/70 border border-zinc-800 text-white placeholder-zinc-500 focus:border-red-500 focus:outline-none transition">
+          </div>
+
+          <div id="vip-error-msg" class="hidden text-[11px] text-red-500 font-bold">
+            * Indiquez au moins une adresse e-mail ou un numéro de téléphone.
+          </div>
+
+          <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-wider transition shadow-[0_0_20px_rgba(239,68,68,0.5)]">
+            Rejoindre le Club Privé
+          </button>
+        </form>
+
+        <div id="vip-success-box" class="hidden p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-bold text-xs">
+          ✓ Inscription validée ! Bienvenue parmi nos membres VIP.
+        </div>
+
+        <button type="button" id="skip-vip-modal-btn" class="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 uppercase tracking-wider pt-2 block mx-auto">
+          Passer et voir la flotte →
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Formulaire Newsletter Footer
+      const homeLeadForm = document.getElementById('home-lead-form');
+      if (homeLeadForm) {
+        homeLeadForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('home-lead-contact');
+          const val = input.value.trim();
+          if (!val) return;
+
+          const isEmail = val.includes('@');
+          try {
+            NetworkStore.addLead({
+              email: isEmail ? val : '',
+              phone: !isEmail ? val : '',
+              source: 'Accueil Footer (Club Privé)'
+            });
+            input.value = '';
+            document.getElementById('home-lead-success').classList.remove('hidden');
+          } catch (err) {
+            alert(err.message || 'Erreur lors de l\'enregistrement.');
+          }
+        });
+      }
+
+      // Grille des 8 bolides en vedette
       const otherGrid = document.getElementById('home-other-cars-grid');
       if (!otherGrid || typeof FleetStore === 'undefined') return;
 
       const cars = FleetStore.getCars();
-      // Select top 8 prestige cars excluding the 3 main demo cars
       const highlightCars = cars.filter(c => !['rs6', 'rs3', 'golf8r'].includes(c.id)).slice(0, 8);
 
       otherGrid.innerHTML = '';
       highlightCars.forEach(car => {
         const item = document.createElement('a');
+        const isAvail = car.isAvailable !== false;
         item.href = `vehicule.html?id=${car.id}`;
         item.className = 'glass-card rounded-2xl overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-red-500/50 transition-all duration-300 shadow-lg';
 
@@ -374,12 +535,20 @@
           <div class="relative aspect-[16/10] w-full overflow-hidden bg-black">
             <img src="${car.images[0]}" alt="${car.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
             <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0e] via-transparent to-transparent pointer-events-none"></div>
-            <div class="absolute top-2 right-2">
+
+            <!-- Badge Disponibilité en haut à gauche -->
+            <div class="absolute top-2 left-2 z-10">
+              <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${isAvail ? 'bg-emerald-950/90 text-emerald-400 border border-emerald-600/60' : 'bg-black/90 text-red-400 border border-red-800/80'} backdrop-blur-md">
+                ${isAvail ? '🟢 DISPO' : '🔴 INDISPO'}
+              </span>
+            </div>
+
+            <div class="absolute top-2 right-2 z-10">
               <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-red-600 text-white">
                 Dès ${car.prices.dailyWeek} €
               </span>
             </div>
-            <div class="absolute bottom-2 left-2">
+            <div class="absolute bottom-2 left-2 z-10">
               <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-black/80 text-red-400 border border-red-900/40">
                 ${car.power}
               </span>

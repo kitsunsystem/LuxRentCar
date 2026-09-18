@@ -969,14 +969,18 @@ class FleetStore {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map(c => ({
+            ...c,
+            isAvailable: c.isAvailable !== false
+          }));
         }
       }
     } catch (e) {
       console.warn('Erreur lecture LocalStorage:', e);
     }
-    this.saveCars(DEFAULT_CARS_DATA);
-    return DEFAULT_CARS_DATA;
+    const defaultWithAvail = DEFAULT_CARS_DATA.map(c => ({ ...c, isAvailable: c.isAvailable !== false }));
+    this.saveCars(defaultWithAvail);
+    return defaultWithAvail;
   }
 
   static getCarById(id) {
@@ -1001,6 +1005,28 @@ class FleetStore {
       return cars[index];
     }
     return null;
+  }
+
+  static setCarAvailability(id, isAvailable) {
+    const cars = this.getCars();
+    const index = cars.findIndex(c => c.id === id);
+    if (index !== -1) {
+      cars[index].isAvailable = Boolean(isAvailable);
+      this.saveCars(cars);
+      return cars[index];
+    }
+    return null;
+  }
+
+  static toggleCarAvailability(id) {
+    const cars = this.getCars();
+    const index = cars.findIndex(c => c.id === id);
+    if (index !== -1) {
+      cars[index].isAvailable = !cars[index].isAvailable;
+      this.saveCars(cars);
+      return cars[index].isAvailable;
+    }
+    return false;
   }
 
   static toggleDateReservation(carId, dateStr, clientName = 'Réservé Client VIP') {
@@ -1035,8 +1061,111 @@ class FleetStore {
 
   static resetToDefault() {
     localStorage.removeItem(STORAGE_KEY);
-    this.saveCars(DEFAULT_CARS_DATA);
-    return DEFAULT_CARS_DATA;
+    const defaultWithAvail = DEFAULT_CARS_DATA.map(c => ({ ...c, isAvailable: true }));
+    this.saveCars(defaultWithAvail);
+    return defaultWithAvail;
+  }
+}
+
+/* ==========================================================================
+   GESTION DU RÉSEAU DE PROSPECTS & LEADS VIP ("NETWORK")
+   ========================================================================== */
+const LEADS_STORAGE_KEY = 'luxrentcar_network_leads_v2';
+
+const DEFAULT_SAMPLE_LEADS = [
+  {
+    id: 'lead_sample_1',
+    email: 'alexandre.m@monaco-vip.com',
+    phone: '+33 6 12 34 56 78',
+    source: 'Entrée Site (Club Privé)',
+    date: '17/09/2026, 18:42',
+    timestamp: Date.now() - 86400000
+  },
+  {
+    id: 'lead_sample_2',
+    email: 'laurent.cannes@gmail.com',
+    phone: '+33 6 98 76 54 32',
+    source: 'Page Flotte',
+    date: '18/09/2026, 09:15',
+    timestamp: Date.now() - 7200000
+  }
+];
+
+class NetworkStore {
+  static getLeads() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(LEADS_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Erreur lecture Leads:', e);
+    }
+    this.saveLeads(DEFAULT_SAMPLE_LEADS);
+    return DEFAULT_SAMPLE_LEADS;
+  }
+
+  static saveLeads(leads) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(leads));
+      }
+    } catch (e) {
+      console.error('Erreur sauvegarde Leads:', e);
+    }
+  }
+
+  static addLead({ email = '', phone = '', source = 'Entrée Site' }) {
+    const leads = this.getLeads();
+    const cleanEmail = email.trim();
+    const cleanPhone = phone.trim();
+
+    if (!cleanEmail && !cleanPhone) {
+      throw new Error('Veuillez renseigner au moins un email ou un numéro de téléphone.');
+    }
+
+    // Vérifier doublon
+    const existing = leads.find(l => 
+      (cleanEmail && l.email && l.email.toLowerCase() === cleanEmail.toLowerCase()) || 
+      (cleanPhone && l.phone && l.phone.replace(/\s+/g, '') === cleanPhone.replace(/\s+/g, ''))
+    );
+
+    if (existing) {
+      if (cleanEmail && !existing.email) existing.email = cleanEmail;
+      if (cleanPhone && !existing.phone) existing.phone = cleanPhone;
+      existing.updatedAt = Date.now();
+      this.saveLeads(leads);
+      return existing;
+    }
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR') + ', ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+    const newLead = {
+      id: 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+      email: cleanEmail,
+      phone: cleanPhone,
+      source: source,
+      date: dateStr,
+      timestamp: Date.now()
+    };
+
+    leads.unshift(newLead);
+    this.saveLeads(leads);
+    return newLead;
+  }
+
+  static deleteLead(id) {
+    const leads = this.getLeads().filter(l => l.id !== id);
+    this.saveLeads(leads);
+    return leads;
+  }
+
+  static clearLeads() {
+    this.saveLeads([]);
   }
 }
 
@@ -1045,8 +1174,9 @@ if (typeof window !== 'undefined') {
   window.DEFAULT_CARS_DATA = DEFAULT_CARS_DATA;
   window.CONTACT_INFO = CONTACT_INFO;
   window.FleetStore = FleetStore;
+  window.NetworkStore = NetworkStore;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { DEFAULT_CARS_DATA, CONTACT_INFO, FleetStore };
+  module.exports = { DEFAULT_CARS_DATA, CONTACT_INFO, FleetStore, NetworkStore };
 }

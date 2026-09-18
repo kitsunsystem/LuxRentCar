@@ -15,22 +15,153 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. Animation d'Entrée & Logo Splash
+   1. Animation d'Entrée Cinématique (race.mp3, Laser Speed Pass & Unlock Fade)
    ========================================================================== */
 function initIntroSplash() {
   const splash = document.getElementById('intro-splash');
+  const startBtn = document.getElementById('start-engine-btn');
   const skipBtn = document.getElementById('skip-intro-btn');
+  const audio = document.getElementById('engine-race-audio');
+  const telemetry = document.getElementById('intro-telemetry');
+  const laserBeam = document.getElementById('race-laser-beam');
+  const logoBox = document.getElementById('intro-logo-box');
+  const startContainer = document.getElementById('start-engine-container');
 
-  const closeSplash = () => {
-    if (!splash) return;
-    splash.classList.add('fade-out');
+  if (!splash) return;
+
+  let hasStarted = false;
+
+  const unlockSite = () => {
+    splash.classList.add('unlocked');
     setTimeout(() => {
       splash.style.display = 'none';
-    }, 600);
+      checkAndShowVipModal();
+    }, 1100);
   };
 
-  if (skipBtn) skipBtn.addEventListener('click', closeSplash);
-  setTimeout(closeSplash, 2600);
+  const startExperience = () => {
+    if (hasStarted) return;
+    hasStarted = true;
+
+    // 1. Jouer le son race.mp3
+    if (audio) {
+      audio.volume = 1.0;
+      audio.currentTime = 0;
+      audio.play().catch(e => {
+        console.warn('Autoplay audio fallback:', e);
+      });
+    }
+
+    // 2. Bouton & Halo
+    if (startBtn) startBtn.classList.add('ignited');
+    if (startContainer) {
+      startContainer.style.opacity = '0.35';
+      startContainer.style.pointerEvents = 'none';
+    }
+
+    // 3. Activer la télémétrie & le passage laser
+    if (telemetry) telemetry.classList.remove('hidden');
+    if (laserBeam) {
+      laserBeam.classList.remove('active');
+      void laserBeam.offsetWidth; // retrigger
+      laserBeam.classList.add('active');
+    }
+
+    if (logoBox) {
+      logoBox.classList.add('scale-110', 'border-red-500', 'shadow-[0_0_60px_rgba(239,68,68,0.9)]');
+    }
+
+    // Animation accélération KM/H & RPM
+    let speed = 0;
+    let rpm = 1200;
+    const speedEl = document.getElementById('telemetry-speed');
+    const rpmEl = document.getElementById('telemetry-rpm');
+
+    const accelInterval = setInterval(() => {
+      speed += Math.floor(Math.random() * 28) + 18;
+      rpm += Math.floor(Math.random() * 600) + 400;
+      if (speed > 320) speed = 320;
+      if (rpm > 8400) rpm = 8400;
+
+      if (speedEl) speedEl.textContent = speed;
+      if (rpmEl) rpmEl.textContent = rpm.toLocaleString();
+
+      if (speed >= 320) clearInterval(accelInterval);
+    }, 80);
+
+    // 4. Déverrouillage fluide après accélération (~2.4s)
+    setTimeout(() => {
+      clearInterval(accelInterval);
+      unlockSite();
+    }, 2400);
+  };
+
+  if (startBtn) startBtn.addEventListener('click', startExperience);
+  if (skipBtn) skipBtn.addEventListener('click', unlockSite);
+}
+
+/* ==========================================================================
+   Modale Invitation Club Privé (Lead Capture à l'Entrée)
+   ========================================================================== */
+function checkAndShowVipModal() {
+  if (sessionStorage.getItem('lux_vip_prompted') === 'true') return;
+
+  const modal = document.getElementById('vip-club-modal');
+  const closeBtn = document.getElementById('close-vip-modal-btn');
+  const skipBtn = document.getElementById('skip-vip-modal-btn');
+  const form = document.getElementById('vip-club-form');
+  const errorMsg = document.getElementById('vip-error-msg');
+  const successBox = document.getElementById('vip-success-box');
+
+  if (!modal) return;
+
+  setTimeout(() => {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }, 1200);
+
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    sessionStorage.setItem('lux_vip_prompted', 'true');
+  };
+
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (skipBtn) skipBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('vip-input-email').value.trim();
+      const phone = document.getElementById('vip-input-phone').value.trim();
+
+      if (!email && !phone) {
+        if (errorMsg) errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      if (errorMsg) errorMsg.classList.add('hidden');
+
+      try {
+        NetworkStore.addLead({
+          email,
+          phone,
+          source: 'Entrée Site (Club Privé)'
+        });
+        form.classList.add('hidden');
+        if (successBox) successBox.classList.remove('hidden');
+
+        setTimeout(() => {
+          closeModal();
+        }, 1800);
+      } catch (err) {
+        alert(err.message || 'Erreur lors de l\'enregistrement.');
+      }
+    });
+  }
 }
 
 /* ==========================================================================
@@ -166,7 +297,8 @@ function renderMinimalFleet() {
 
   cars.forEach(car => {
     const card = document.createElement('div');
-    card.className = 'car-card-minimal group flex flex-col justify-between';
+    const isAvail = car.isAvailable !== false;
+    card.className = `car-card-minimal group flex flex-col justify-between ${!isAvail ? 'opacity-90' : ''}`;
     card.setAttribute('data-car-id', car.id);
 
     const mainPhoto = car.images && car.images.length > 0 ? car.images[0] : 'assets/logo/Logo.jpg';
@@ -177,15 +309,23 @@ function renderMinimalFleet() {
         <img src="${mainPhoto}" alt="${car.name}" class="car-img-cover w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0e] via-transparent to-black/20 pointer-events-none"></div>
 
+        <!-- Pastille Disponibilité -->
+        <div class="absolute top-3.5 left-3.5 z-10">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${isAvail ? 'bg-emerald-950/90 text-emerald-400 border border-emerald-600/60 shadow-[0_0_8px_rgba(16,185,129,0.3)]' : 'bg-black/90 text-red-400 border border-red-800/80'} flex items-center gap-1 backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full ${isAvail ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}"></span>
+            ${isAvail ? 'DISPONIBLE' : 'INDISPONIBLE'}
+          </span>
+        </div>
+
         <!-- Pastille Tarif Clé Flottante -->
-        <div class="absolute top-3.5 right-3.5">
+        <div class="absolute top-3.5 right-3.5 z-10">
           <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-black/70 backdrop-blur-md text-white border border-white/10 shadow-lg">
             Dès <span class="text-red-500 font-mono">${car.prices.dailyWeek} €</span> / j
           </span>
         </div>
 
         <!-- Badge Performance Discret -->
-        <div class="absolute bottom-3 left-3.5">
+        <div class="absolute bottom-3 left-3.5 z-10">
           <span class="px-2.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase bg-red-600/90 text-white">
             ${car.badge}
           </span>
@@ -212,7 +352,7 @@ function renderMinimalFleet() {
 
         <!-- Call to Action Élégant -->
         <div class="pt-4 flex items-center justify-between text-xs font-semibold text-zinc-400 group-hover:text-white transition">
-          <span class="tracking-wider uppercase text-[10px]">Voir détails & disponibilités</span>
+          <span class="tracking-wider uppercase text-[10px]">${isAvail ? 'Voir détails & disponibilités' : 'Voir fiche & alerte disponibilité'}</span>
           <span class="text-red-500 transform group-hover:translate-x-1 transition duration-300">→</span>
         </div>
       </div>
@@ -386,7 +526,13 @@ function executeModalWhatsApp() {
 
   msg += `*Caution :* ${(isYoung ? currentSelectedCar.prices.depositYoung : currentSelectedCar.prices.deposit).toLocaleString()} € (${isYoung ? '-25 ans' : 'Standard'})\n`;
   msg += `*Secteur :* Nice / Cannes / Monaco / St-Tropez\n\n`;
-  msg += `Bonjour, merci de me confirmer la disponibilité pour ce véhicule !`;
+
+  const isAvail = currentSelectedCar.isAvailable !== false;
+  if (isAvail) {
+    msg += `Bonjour, merci de me confirmer la disponibilité pour ce véhicule !`;
+  } else {
+    msg += `Bonjour, ce véhicule étant noté non disponible, pouvez-vous me prévenir dès qu'il se libère ou me proposer un bolide équivalent ?`;
+  }
 
   const waUrl = `https://wa.me/${CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(msg)}`;
   window.open(waUrl, '_blank');
