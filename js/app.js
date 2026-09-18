@@ -15,89 +15,58 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. Animation d'Entrée Cinématique (race.mp3, Laser Speed Pass & Unlock Fade)
+   1. Animation d'Entrée Cinématique Automatique (< 2s) avec race.mp3
    ========================================================================== */
 function initIntroSplash() {
   const splash = document.getElementById('intro-splash');
-  const startBtn = document.getElementById('start-engine-btn');
-  const skipBtn = document.getElementById('skip-intro-btn');
   const audio = document.getElementById('engine-race-audio');
-  const telemetry = document.getElementById('intro-telemetry');
   const laserBeam = document.getElementById('race-laser-beam');
   const logoBox = document.getElementById('intro-logo-box');
-  const startContainer = document.getElementById('start-engine-container');
+  const speedEl = document.getElementById('telemetry-speed');
 
   if (!splash) return;
 
-  let hasStarted = false;
+  // 1. Démarrage instantané du son race.mp3
+  if (audio) {
+    audio.volume = 1.0;
+    audio.currentTime = 0;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Si la politique de lecture automatique du navigateur restreint le son sans geste,
+        // on tente sur le premier contact/défilement
+        const unlockAudio = () => {
+          audio.play().catch(() => {});
+          window.removeEventListener('pointerdown', unlockAudio);
+          window.removeEventListener('keydown', unlockAudio);
+        };
+        window.addEventListener('pointerdown', unlockAudio, { once: true });
+        window.addEventListener('keydown', unlockAudio, { once: true });
+      });
+    }
+  }
 
-  const unlockSite = () => {
+  // 2. Animation laser et accélération
+  if (laserBeam) laserBeam.classList.add('active');
+  if (logoBox) logoBox.classList.add('scale-110');
+
+  let speed = 0;
+  const accelTimer = setInterval(() => {
+    speed += 35;
+    if (speed > 320) speed = 320;
+    if (speedEl) speedEl.textContent = speed;
+    if (speed >= 320) clearInterval(accelTimer);
+  }, 40);
+
+  // 3. Déverrouillage automatique garanti en ~1.5s (durée totale < 2s avec le fade)
+  setTimeout(() => {
+    clearInterval(accelTimer);
     splash.classList.add('unlocked');
     setTimeout(() => {
       splash.style.display = 'none';
       checkAndShowVipModal();
-    }, 1100);
-  };
-
-  const startExperience = () => {
-    if (hasStarted) return;
-    hasStarted = true;
-
-    // 1. Jouer le son race.mp3
-    if (audio) {
-      audio.volume = 1.0;
-      audio.currentTime = 0;
-      audio.play().catch(e => {
-        console.warn('Autoplay audio fallback:', e);
-      });
-    }
-
-    // 2. Bouton & Halo
-    if (startBtn) startBtn.classList.add('ignited');
-    if (startContainer) {
-      startContainer.style.opacity = '0.35';
-      startContainer.style.pointerEvents = 'none';
-    }
-
-    // 3. Activer la télémétrie & le passage laser
-    if (telemetry) telemetry.classList.remove('hidden');
-    if (laserBeam) {
-      laserBeam.classList.remove('active');
-      void laserBeam.offsetWidth; // retrigger
-      laserBeam.classList.add('active');
-    }
-
-    if (logoBox) {
-      logoBox.classList.add('scale-110', 'border-red-500', 'shadow-[0_0_60px_rgba(239,68,68,0.9)]');
-    }
-
-    // Animation accélération KM/H & RPM
-    let speed = 0;
-    let rpm = 1200;
-    const speedEl = document.getElementById('telemetry-speed');
-    const rpmEl = document.getElementById('telemetry-rpm');
-
-    const accelInterval = setInterval(() => {
-      speed += Math.floor(Math.random() * 28) + 18;
-      rpm += Math.floor(Math.random() * 600) + 400;
-      if (speed > 320) speed = 320;
-      if (rpm > 8400) rpm = 8400;
-
-      if (speedEl) speedEl.textContent = speed;
-      if (rpmEl) rpmEl.textContent = rpm.toLocaleString();
-
-      if (speed >= 320) clearInterval(accelInterval);
-    }, 80);
-
-    // 4. Déverrouillage fluide après accélération (~2.4s)
-    setTimeout(() => {
-      clearInterval(accelInterval);
-      unlockSite();
-    }, 2400);
-  };
-
-  if (startBtn) startBtn.addEventListener('click', startExperience);
-  if (skipBtn) skipBtn.addEventListener('click', unlockSite);
+    }, 550);
+  }, 1400);
 }
 
 /* ==========================================================================

@@ -201,13 +201,13 @@ body {
    Supercar Cockpit Ignition & Race.mp3 Cinematic Animations
    ========================================================================== */
 #intro-splash {
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s;
 }
 
 #intro-splash.unlocked {
-  transform: scale(1.08);
+  transform: scale(1.06);
   opacity: 0;
-  filter: blur(16px);
+  filter: blur(12px);
   visibility: hidden;
   pointer-events: none;
 }
