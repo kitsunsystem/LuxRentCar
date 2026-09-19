@@ -333,3 +333,87 @@ body {
   }
 }
 
+/* ==========================================================================
+   BARRE DE NAVIGATION MOBILE DOCK EN BAS DE PAGE (FLOATING GLASS DOCK)
+   ========================================================================== */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 5.5rem !important;
+  }
+}
+
+.mobile-dock-container {
+  animation: mobileDockEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mobileDockEnter {
+  from {
+    opacity: 0;
+    transform: translateY(35px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mobile-dock-bar {
+  background: rgba(8, 8, 12, 0.88);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 25px rgba(239, 68, 68, 0.15);
+}
+
+.mobile-nav-item {
+  position: relative;
+  border: 1px solid transparent;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.93);
+}
+
+.mobile-nav-item.active {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.05) 100%);
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.mobile-nav-item.active svg {
+  color: #ef4444;
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.7));
+  transform: translateY(-1px);
+}
+
+.mobile-nav-item.active span {
+  color: #ffffff;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+}
+
+.mobile-nav-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: #ef4444;
+  box-shadow: 0 0 8px #ef4444, 0 0 14px #ef4444;
+  animation: pulseBeacon 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseBeacon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.6;
+  }
+}
+
