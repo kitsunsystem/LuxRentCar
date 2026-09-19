@@ -1177,6 +1177,13 @@ if (typeof window !== 'undefined') {
   window.NetworkStore = NetworkStore;
 }
 
+// Interdire le zoom tactile (pinch-to-zoom) sur iOS/mobile
+if (typeof document !== 'undefined') {
+  document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  }, { passive: false });
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { DEFAULT_CARS_DATA, CONTACT_INFO, FleetStore, NetworkStore };
 }
