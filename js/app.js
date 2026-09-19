@@ -21,7 +21,6 @@ function initIntroSplash() {
   const splash = document.getElementById('intro-splash');
   const audio = document.getElementById('engine-race-audio');
   const laserBeam = document.getElementById('race-laser-beam');
-  const logoBox = document.getElementById('intro-logo-box');
   const speedEl = document.getElementById('telemetry-speed');
 
   if (!splash) return;
@@ -48,7 +47,6 @@ function initIntroSplash() {
 
   // 2. Animation laser et accélération
   if (laserBeam) laserBeam.classList.add('active');
-  if (logoBox) logoBox.classList.add('scale-110');
 
   let speed = 0;
   const accelTimer = setInterval(() => {
