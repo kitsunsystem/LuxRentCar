@@ -9,41 +9,19 @@ let currentSelectedCar = null;
 document.addEventListener('DOMContentLoaded', () => {
   initIntroSplash();
   initBackgroundCanvas();
-  initEngineSound();
   renderMinimalFleet();
   initDetailModalEvents();
 });
 
 /* ==========================================================================
-   1. Animation d'Entrée Cinématique Automatique (< 2s) avec race.mp3
+   1. Animation d'Entrée Cinématique Automatique (< 2s)
    ========================================================================== */
 function initIntroSplash() {
   const splash = document.getElementById('intro-splash');
-  const audio = document.getElementById('engine-race-audio');
   const laserBeam = document.getElementById('race-laser-beam');
   const speedEl = document.getElementById('telemetry-speed');
 
   if (!splash) return;
-
-  // 1. Démarrage instantané du son race.mp3
-  if (audio) {
-    audio.volume = 1.0;
-    audio.currentTime = 0;
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Si la politique de lecture automatique du navigateur restreint le son sans geste,
-        // on tente sur le premier contact/défilement
-        const unlockAudio = () => {
-          audio.play().catch(() => {});
-          window.removeEventListener('pointerdown', unlockAudio);
-          window.removeEventListener('keydown', unlockAudio);
-        };
-        window.addEventListener('pointerdown', unlockAudio, { once: true });
-        window.addEventListener('keydown', unlockAudio, { once: true });
-      });
-    }
-  }
 
   // 2. Animation laser et accélération
   if (laserBeam) laserBeam.classList.add('active');
@@ -181,75 +159,6 @@ function initBackgroundCanvas() {
     requestAnimationFrame(draw);
   }
   draw();
-}
-
-/* ==========================================================================
-   3. Son Moteur V8 (Web Audio API)
-   ========================================================================== */
-let audioCtx = null;
-let isSoundPlaying = false;
-let engineOsc1 = null;
-let engineOsc2 = null;
-let gainNode = null;
-
-function initEngineSound() {
-  const toggleBtn = document.getElementById('sound-toggle-btn');
-  const bars = document.querySelectorAll('.sound-wave-bar');
-  const textEl = document.getElementById('sound-status-text');
-
-  if (!toggleBtn) return;
-
-  toggleBtn.addEventListener('click', () => {
-    if (!audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContext();
-    }
-
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-
-    if (!isSoundPlaying) {
-      gainNode = audioCtx.createGain();
-      gainNode.gain.setValueAtTime(0.01, audioCtx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.06, audioCtx.currentTime + 1.0);
-
-      engineOsc1 = audioCtx.createOscillator();
-      engineOsc1.type = 'sawtooth';
-      engineOsc1.frequency.setValueAtTime(52, audioCtx.currentTime);
-
-      engineOsc2 = audioCtx.createOscillator();
-      engineOsc2.type = 'triangle';
-      engineOsc2.frequency.setValueAtTime(104, audioCtx.currentTime);
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(240, audioCtx.currentTime);
-
-      engineOsc1.connect(filter);
-      engineOsc2.connect(filter);
-      filter.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-
-      engineOsc1.start();
-      engineOsc2.start();
-
-      isSoundPlaying = true;
-      bars.forEach(b => b.classList.remove('muted'));
-      if (textEl) textEl.textContent = 'ON';
-    } else {
-      if (gainNode) {
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
-        setTimeout(() => {
-          try {
-            if (engineOsc1) engineOsc1.stop();
-            if (engineOsc2) engineOsc2.stop();
-          } catch (e) {}
-        }, 500);
-      }
-      isSoundPlaying = false;
-      bars.forEach(b => b.classList.add('muted'));
-      if (textEl) textEl.textContent = 'V8';
-    }
-  });
 }
 
 /* ==========================================================================
