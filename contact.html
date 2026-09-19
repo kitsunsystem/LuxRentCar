@@ -163,10 +163,8 @@
           </div>
           <div>
             <label class="block text-zinc-400 font-semibold mb-1 uppercase tracking-wider text-[10px]">Véhicule Souhaité</label>
-            <select id="form-car-select" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white focus:border-red-500 focus:outline-none">
-              <option value="Audi RS6 Avant Miltek (600 CH)">Audi RS6 Avant Miltek (600 CH)</option>
-              <option value="Audi RS3 Sportback 2025 (400 CH)">Audi RS3 Sportback 2025 (400 CH)</option>
-              <option value="Volkswagen Golf 8 R-Performance (320 CH)">Volkswagen Golf 8 R-Performance (320 CH)</option>
+            <select id="form-car-select" required class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white focus:border-red-500 focus:outline-none cursor-pointer">
+              <option value="">-- Sélectionner un véhicule dans la flotte --</option>
             </select>
           </div>
         </div>
@@ -217,7 +215,52 @@
   <script src="js/data.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Remplir les lieux
+      // 1. Remplir dynamiquement tous les véhicules depuis FleetStore
+      const carSelect = document.getElementById('form-car-select');
+      const cars = FleetStore.getCars();
+
+      // Vérifier si un véhicule est demandé dans l'URL (?car=rs6 ou ?car=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const preselectedCarParam = (urlParams.get('car') || '').toLowerCase().trim();
+
+      // Regrouper par catégorie
+      const categoriesMap = {};
+      cars.forEach(car => {
+        const cat = car.categoryName || 'Véhicules Disponibles';
+        if (!categoriesMap[cat]) categoriesMap[cat] = [];
+        categoriesMap[cat].push(car);
+      });
+
+      Object.entries(categoriesMap).forEach(([categoryName, carList]) => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = `── ${categoryName.toUpperCase()} ──`;
+        optgroup.className = 'bg-zinc-900 text-red-400 font-bold';
+
+        carList.forEach(car => {
+          const opt = document.createElement('option');
+          opt.className = 'bg-zinc-950 text-white font-normal';
+          const isAvail = car.isAvailable !== false;
+          const statusIcon = isAvail ? '🟢' : '🔴';
+          const statusLabel = isAvail ? '' : ' [Indisponible pour le moment]';
+          
+          opt.value = `${car.name} (${car.power || ''})${isAvail ? '' : ' - Actuellement Indisponible'}`;
+          opt.textContent = `${statusIcon} ${car.name} • ${car.power || ''} (${car.prices ? car.prices.dailyWeek + '€/j' : ''})${statusLabel}`;
+
+          // Pré-sélectionner si correspond au paramètre URL
+          if (preselectedCarParam && (
+            car.id.toLowerCase() === preselectedCarParam ||
+            car.name.toLowerCase().includes(preselectedCarParam)
+          )) {
+            opt.selected = true;
+          }
+
+          optgroup.appendChild(opt);
+        });
+
+        carSelect.appendChild(optgroup);
+      });
+
+      // 2. Remplir les lieux de prise en charge
       const locSelect = document.getElementById('form-location-select');
       CONTACT_INFO.spots.forEach(s => {
         const opt = document.createElement('option');
@@ -226,23 +269,28 @@
         locSelect.appendChild(opt);
       });
 
-      // Gestion de la soumission du formulaire
+      // 3. Gestion de la soumission du formulaire vers WhatsApp
       const form = document.getElementById('express-contact-form');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const name = document.getElementById('form-name').value.trim();
         const car = document.getElementById('form-car-select').value;
         const loc = document.getElementById('form-location-select').value;
-        const dates = document.getElementById('form-dates').value.trim() || 'À définir';
+        const dates = document.getElementById('form-dates').value.trim() || 'À convenir ensemble';
         const msg = document.getElementById('form-message').value.trim();
 
-        let text = `🏎️ *DEMANDE DE CONTACT LUXRENTCAR* 🏎️\n\n`;
+        if (!car) {
+          alert('Veuillez choisir un véhicule dans la liste.');
+          return;
+        }
+
+        let text = `🏎️ *DEMANDE DE CONTACT LUXRENTCAR (06)* 🏎️\n\n`;
         text += `*Nom :* ${name}\n`;
-        text += `*Véhicule :* ${car}\n`;
-        text += `*Lieu de livraison :* ${loc}\n`;
-        text += `*Période :* ${dates}\n`;
-        if (msg) text += `*Précisions :* ${msg}\n`;
-        text += `\nBonjour LuxRentCar, merci de me recontacter pour cette demande !`;
+        text += `*Véhicule souhaité :* ${car}\n`;
+        text += `*Lieu de prise en charge :* ${loc}\n`;
+        text += `*Dates souhaitées :* ${dates}\n`;
+        if (msg) text += `*Précisions client :* ${msg}\n`;
+        text += `\nBonjour LuxRentCar, merci de me recontacter pour confirmer la faisabilité et les modalités de réservation !`;
 
         const waUrl = `https://wa.me/${CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(text)}`;
         window.open(waUrl, '_blank');
